@@ -38,25 +38,59 @@ const lineContainers = document.querySelectorAll(".line-container");
 const lineWrappers = document.querySelectorAll(".line-wrapper");
 const lineIndexes = document.querySelectorAll(".line-index");
 
-lineIndexes.forEach((lineIndex, i) => {
-  lineIndex.addEventListener("focus", function (e) {
-    // const inputBox = document.createElement("input");
-    // lineWrappers[i].appendChild(inputBox);
+lineIndexes.forEach((lineIndex, index) => {
+  let commentWrapper = createElementWithTypeAndClass("div", "comment-wrapper");
 
-    // const commentWrapper = document.createElement("div");
-    // commentWrapper.classList.add("comment-wrapper");
+  let commentInput = createElementWithTypeAndClass(
+    "textarea",
+    "comment-textarea"
+  );
 
-    const commentWrapper = createElementWithTypeAndClass(
-      "div",
-      "comment-wrapper"
-    );
+  let commentWrapperBottom = createElementWithTypeAndClass(
+    "div",
+    "comment-wrapper--bottom"
+  );
 
-    const commentInput = document.createElement("input");
-    commentInput.classList.add("comment-input");
+  let cancelButton = createElementWithTypeAndClass("button", "button--cancel");
+  let cancelButtonText = document.createTextNode("Cancel");
+  cancelButton.appendChild(cancelButtonText);
 
-    const commentWrapperBottom = document.createElement("div");
-    commentInput.classList.add("comment-wrapper--bottom");
+  let sendButton = createElementWithTypeAndClass("button", "button--send");
+  let sendButtonText = document.createTextNode("Send");
+  sendButton.appendChild(sendButtonText);
 
-    const sendButton = document.createElement;
+  let savePrivateNoteButton = createElementWithTypeAndClass(
+    "button",
+    "button--save"
+  );
+  let savePrivateNoteText = document.createTextNode("Save private note");
+  savePrivateNoteButton.appendChild(savePrivateNoteText);
+
+  commentWrapperBottom.appendChild(cancelButton);
+  commentWrapperBottom.appendChild(sendButton);
+  commentWrapperBottom.appendChild(savePrivateNoteButton);
+
+  commentWrapper.appendChild(commentInput);
+  commentWrapper.appendChild(commentWrapperBottom);
+
+  lineWrappers[index].appendChild(commentWrapper);
+});
+
+const commentWrappers = document.querySelectorAll(".comment-wrapper");
+
+lineIndexes.forEach((lineIndex, index) => {
+  lineIndex.addEventListener("click", function (e) {
+    if (!commentWrappers[index].classList.contains("comment-wrapper--shown")) {
+      commentWrappers[index].classList.add("comment-wrapper--shown");
+    }
+    console.log(commentWrappers[index]);
+  });
+});
+
+const cancelButtons = document.querySelectorAll(".button--cancel");
+
+cancelButtons.forEach((cancelButton, index) => {
+  cancelButton.addEventListener("click", function (e) {
+    commentWrappers[index].classList.remove("comment-wrapper--shown");
   });
 });
