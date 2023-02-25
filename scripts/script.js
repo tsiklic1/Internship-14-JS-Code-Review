@@ -1,3 +1,5 @@
+import { createElementWithTypeAndClass } from "./helpers.js";
+
 const code = [
   "linija1",
   "linija2",
@@ -9,49 +11,52 @@ const code = [
   "linija8",
 ];
 
-//adding html with js - example
-
-// const para = document.createElement("p");
-// const node = document.createTextNode("This is new.");
-// para.appendChild(node);
-// const element = document.querySelector(".code-wrapper");
-// element.appendChild(para);
-
 const codeWrapper = document.querySelector(".code-wrapper");
 
-// code.forEach((line) => {
-//   let lineElement = document.createElement("p");
-//   let lineNode = document.createTextNode(line);
-//   lineElement.appendChild(lineNode);
-//   codeWrapper.appendChild(lineElement);
-// });
-
 code.forEach((line, index) => {
-  let lineContainer = document.createElement("div");
+  let lineWrapper = createElementWithTypeAndClass("div", "line-wrapper");
 
-  let lineIndex = document.createElement("p");
+  let lineContainer = createElementWithTypeAndClass("div", "line-container");
+
+  let lineIndex = createElementWithTypeAndClass("button", "line-index");
   let lineIndexNode = document.createTextNode(String(index + 1));
   lineIndex.appendChild(lineIndexNode);
-  lineIndex.classList.add("line-index");
 
-  let lineContent = document.createElement("p");
+  let lineContent = createElementWithTypeAndClass("p", "line-content");
   let lineContentNode = document.createTextNode(line);
   lineContent.appendChild(lineContentNode);
-  lineContent.classList.add("line-content");
 
   lineContainer.appendChild(lineIndex);
   lineContainer.appendChild(lineContent);
-  lineContainer.classList.add("line-container");
 
-  codeWrapper.appendChild(lineContainer);
+  lineWrapper.appendChild(lineContainer);
+
+  codeWrapper.appendChild(lineWrapper);
 });
 
-const lines = document.querySelectorAll(".line-container");
-
+const lineContainers = document.querySelectorAll(".line-container");
+const lineWrappers = document.querySelectorAll(".line-wrapper");
 const lineIndexes = document.querySelectorAll(".line-index");
 
-// lineIndexes.forEach((lineIndex) => {
-//   lineIndex.addEventListener("focus", function (e) {
-//     lineIndex.style.color("red");
-//   });
-// });
+lineIndexes.forEach((lineIndex, i) => {
+  lineIndex.addEventListener("focus", function (e) {
+    // const inputBox = document.createElement("input");
+    // lineWrappers[i].appendChild(inputBox);
+
+    // const commentWrapper = document.createElement("div");
+    // commentWrapper.classList.add("comment-wrapper");
+
+    const commentWrapper = createElementWithTypeAndClass(
+      "div",
+      "comment-wrapper"
+    );
+
+    const commentInput = document.createElement("input");
+    commentInput.classList.add("comment-input");
+
+    const commentWrapperBottom = document.createElement("div");
+    commentInput.classList.add("comment-wrapper--bottom");
+
+    const sendButton = document.createElement;
+  });
+});

@@ -12,17 +12,23 @@
 
 .line-container {
   display: flex;
+  align-items: center;
 }
 
 .line-index {
-  margin-right: 20px;
+  margin-right: 10px;
   margin-top: 0px;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   font-size: 16px;
+  background-color: transparent;
+  border: transparent;
 }
 
 .line-content {
   margin-top: 0px;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
   font-size: 16px;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  color: #444444;
 }
