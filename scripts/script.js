@@ -52,10 +52,13 @@ lineIndexes.forEach((lineIndex, index) => {
   );
 
   let cancelButton = createElementWithTypeAndClass("button", "button--cancel");
+  cancelButton.classList.add("button");
   let cancelButtonText = document.createTextNode("Cancel");
   cancelButton.appendChild(cancelButtonText);
 
   let sendButton = createElementWithTypeAndClass("button", "button--send");
+  sendButton.classList.add("button");
+
   let sendButtonText = document.createTextNode("Send");
   sendButton.appendChild(sendButtonText);
 
@@ -63,6 +66,8 @@ lineIndexes.forEach((lineIndex, index) => {
     "button",
     "button--save"
   );
+  savePrivateNoteButton.classList.add("button");
+
   let savePrivateNoteText = document.createTextNode("Save private note");
   savePrivateNoteButton.appendChild(savePrivateNoteText);
 
@@ -77,6 +82,8 @@ lineIndexes.forEach((lineIndex, index) => {
 });
 
 const commentWrappers = document.querySelectorAll(".comment-wrapper");
+const commentTextareas = document.querySelectorAll(".comment-textarea");
+console.log(commentTextareas);
 
 lineIndexes.forEach((lineIndex, index) => {
   lineIndex.addEventListener("click", function (e) {
@@ -92,5 +99,6 @@ const cancelButtons = document.querySelectorAll(".button--cancel");
 cancelButtons.forEach((cancelButton, index) => {
   cancelButton.addEventListener("click", function (e) {
     commentWrappers[index].classList.remove("comment-wrapper--shown");
+    commentTextareas[index].value = "";
   });
 });
