@@ -5,4 +5,10 @@ function createElementWithTypeAndClass(type, className) {
   return element;
 }
 
-export { createElementWithTypeAndClass };
+function getCurrentDateTime() {
+  return (
+    new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString()
+  );
+}
+
+export { createElementWithTypeAndClass, getCurrentDateTime };
