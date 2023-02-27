@@ -14,7 +14,7 @@ const headers = { key };
     const response = await fetch(`${baseUrl}code`, { headers });
     const json = await response.json();
 
-    console.log("ucitalo se");
+    console.log("Loaded");
 
     const codeLines = json.code.split("\n");
 
@@ -121,17 +121,16 @@ const headers = { key };
       });
     });
 
-    //send comment
     const sendButtons = document.querySelectorAll(".button--send");
 
     sendButtons.forEach((sendButton, index) => {
       sendButton.addEventListener("click", function (e) {
         const commentContent = commentTextareas[index].value;
 
-        // if (!commentContent) {
-        //   alert("Comment can't be empty");
-        //   return;
-        // }
+        if (!commentContent) {
+          alert("Comment can't be empty");
+          return;
+        }
 
         const comment = {
           line: index,
@@ -158,31 +157,23 @@ const headers = { key };
         })();
       });
     });
+
+    //ovo ispod ti dobavi sve komentare,
+    //sad triba proc kroz listu, napravit html za svaki komentar i stavit ga
+    (async () => {
+      try {
+        const response = await fetch(`${baseUrl}comments`, {
+          headers: { key },
+        });
+        const json = await response.json();
+        console.log(json);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
   } catch (error) {
     console.log("ERROR:", error);
   }
 })(baseUrl, headers);
 
 const codeWrapper = document.querySelector(".code-wrapper");
-
-// fetch(`${baseUrl}comments/:id`, { headers: { key } })
-//   .then((response) => response.json())
-//   .then((json) => console.log(json))
-//   .catch((err) => console.log(err));
-
-// fetch(`${baseUrl}create`, {
-//   method: "POST",
-//   headers: {
-//     "Content-Type": "application/json",
-//     key,
-//   },
-//   body: JSON.stringify({
-//     firstName: "test",
-//     lastName: "testis",
-//   }),
-// })
-//   .then((response) => response.json())
-//   .then((json) => {
-//     if (!json.userId) throw "Error no user";
-//   })
-//   .catch((error) => console.log(err));
