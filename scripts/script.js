@@ -1,5 +1,49 @@
 import { createElementWithTypeAndClass } from "./helpers.js";
 
+const baseUrl = "https://homework-server1.onrender.com/";
+
+//&nbsp
+//\u00A0
+
+const key = "tsiklic1";
+
+fetch(`${baseUrl}code`, { headers: { key } })
+  .then((response) => response.json())
+  .then((json) => {
+    const codeLines = json.code.split("\n");
+
+    const codeLinesWithTabs = codeLines.map((line) =>
+      line.replace(/\s/g, "\u00A0")
+    );
+
+    console.log(codeLinesWithTabs);
+
+    codeLinesWithTabs.forEach((line, index) => {
+      let lineWrapper = createElementWithTypeAndClass("div", "line-wrapper");
+
+      let lineContainer = createElementWithTypeAndClass(
+        "div",
+        "line-container"
+      );
+
+      let lineIndex = createElementWithTypeAndClass("button", "line-index");
+      let lineIndexNode = document.createTextNode(String(index + 1));
+      lineIndex.appendChild(lineIndexNode);
+
+      let lineContent = createElementWithTypeAndClass("p", "line-content");
+      let lineContentNode = document.createTextNode(line);
+      lineContent.appendChild(lineContentNode);
+
+      lineContainer.appendChild(lineIndex);
+      lineContainer.appendChild(lineContent);
+
+      lineWrapper.appendChild(lineContainer);
+
+      codeWrapper.appendChild(lineWrapper);
+    });
+  })
+  .catch((err) => console.log("catch", err));
+
 const code = [
   "linija1",
   "linija2",
@@ -13,26 +57,26 @@ const code = [
 
 const codeWrapper = document.querySelector(".code-wrapper");
 
-code.forEach((line, index) => {
-  let lineWrapper = createElementWithTypeAndClass("div", "line-wrapper");
+// code.forEach((line, index) => {
+//   let lineWrapper = createElementWithTypeAndClass("div", "line-wrapper");
 
-  let lineContainer = createElementWithTypeAndClass("div", "line-container");
+//   let lineContainer = createElementWithTypeAndClass("div", "line-container");
 
-  let lineIndex = createElementWithTypeAndClass("button", "line-index");
-  let lineIndexNode = document.createTextNode(String(index + 1));
-  lineIndex.appendChild(lineIndexNode);
+//   let lineIndex = createElementWithTypeAndClass("button", "line-index");
+//   let lineIndexNode = document.createTextNode(String(index + 1));
+//   lineIndex.appendChild(lineIndexNode);
 
-  let lineContent = createElementWithTypeAndClass("p", "line-content");
-  let lineContentNode = document.createTextNode(line);
-  lineContent.appendChild(lineContentNode);
+//   let lineContent = createElementWithTypeAndClass("p", "line-content");
+//   let lineContentNode = document.createTextNode(line);
+//   lineContent.appendChild(lineContentNode);
 
-  lineContainer.appendChild(lineIndex);
-  lineContainer.appendChild(lineContent);
+//   lineContainer.appendChild(lineIndex);
+//   lineContainer.appendChild(lineContent);
 
-  lineWrapper.appendChild(lineContainer);
+//   lineWrapper.appendChild(lineContainer);
 
-  codeWrapper.appendChild(lineWrapper);
-});
+//   codeWrapper.appendChild(lineWrapper);
+// });
 
 const lineContainers = document.querySelectorAll(".line-container");
 const lineWrappers = document.querySelectorAll(".line-wrapper");
@@ -83,14 +127,12 @@ lineIndexes.forEach((lineIndex, index) => {
 
 const commentWrappers = document.querySelectorAll(".comment-wrapper");
 const commentTextareas = document.querySelectorAll(".comment-textarea");
-console.log(commentTextareas);
 
 lineIndexes.forEach((lineIndex, index) => {
   lineIndex.addEventListener("click", function (e) {
     if (!commentWrappers[index].classList.contains("comment-wrapper--shown")) {
       commentWrappers[index].classList.add("comment-wrapper--shown");
     }
-    console.log(commentWrappers[index]);
   });
 });
 
