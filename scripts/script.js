@@ -102,6 +102,11 @@ const headers = { key };
             console.log(err);
           }
         })();
+        commentTextareas[index].value = "";
+
+        console.log(commentWrappers[index]);
+
+        commentWrappers[index].classList.remove("comment-wrapper--shown");
       });
     });
 
@@ -148,6 +153,10 @@ const headers = { key };
                 console.log("ERROR:", err);
               }
             })();
+
+            commentDisplayWrapper.classList.add(
+              "comment-display-wrapper--removed"
+            );
           });
         });
       } catch (error) {

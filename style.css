@@ -102,6 +102,10 @@ body {
   margin-left: 30px;
 }
 
+.comment-display-wrapper--removed {
+  display: none;
+}
+
 .comment-text {
   margin-top: 0;
   margin-bottom: 12px;
