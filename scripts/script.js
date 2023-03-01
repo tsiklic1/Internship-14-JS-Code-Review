@@ -3,6 +3,7 @@ import {
   getCurrentDateTime,
   createHTMLforCodeBlock,
   createHTMLforCommentWrapper,
+  createHTMLforCommentDisplayWrapper,
 } from "./helpers.js";
 
 const baseUrl = "https://homework-server1.onrender.com/";
@@ -69,6 +70,8 @@ const headers = { key };
       sendButton.addEventListener("click", function (e) {
         const commentContent = commentTextareas[index].value;
 
+        console.log(commentTextareas[index].value);
+
         if (!commentContent) {
           alert("Comment can't be empty");
           return;
@@ -78,6 +81,8 @@ const headers = { key };
           line: index,
           text: commentContent,
         };
+
+        console.log(comment);
 
         (async () => {
           try {
@@ -92,7 +97,7 @@ const headers = { key };
 
             const response = await fetch(`${baseUrl}create`, options);
             const json = await response.json();
-            console.log("Posted comment", json.comment);
+            console.log("Posted comment", json);
           } catch (err) {
             console.log(err);
           }
@@ -106,42 +111,44 @@ const headers = { key };
           headers: { key },
         });
         const json = await response.json();
+
         console.log(json);
 
-        json.comments.forEach((comment) => {
-          //making html for comment
-          let commentDisplayWrapper = createElementWithTypeAndClass(
-            "div",
-            "comment-display-wrapper"
+        json.comments.forEach((comment, index) => {
+          let commentDisplayWrapper = createHTMLforCommentDisplayWrapper(
+            comment,
+            key,
+            baseUrl
           );
 
-          let commentText = createElementWithTypeAndClass("p", "comment-text");
-          let commentTextNode = document.createTextNode(comment.text);
-          commentText.appendChild(commentTextNode);
-
-          let commentDisplayBottom = createElementWithTypeAndClass(
-            "div",
-            "comment-display--bottom"
-          );
-
-          let commentDate = createElementWithTypeAndClass("p", "comment-date");
-          let commentDateNode = document.createTextNode(comment.createdAt);
-          commentDate.appendChild(commentDateNode);
-
-          let commentLikeToggleButton = createElementWithTypeAndClass(
-            "button",
-            "button--like"
-          );
-          let commentLikeToggleButtonNode = document.createTextNode("Like");
-          commentLikeToggleButton.appendChild(commentLikeToggleButtonNode);
-
-          commentDisplayBottom.appendChild(commentDate);
-          commentDisplayBottom.appendChild(commentLikeToggleButton);
-
-          commentDisplayWrapper.appendChild(commentText);
-          commentDisplayWrapper.appendChild(commentDisplayBottom);
+          console.log(comment.id);
 
           lineWrappers[comment.line].appendChild(commentDisplayWrapper);
+
+          let commentDeleteButton =
+            commentDisplayWrapper.querySelector(".button--delete");
+          console.log(index, commentDeleteButton);
+
+          commentDeleteButton.addEventListener("click", function (e) {
+            (async () => {
+              try {
+                const options = {
+                  method: "DELETE",
+                  headers: { key },
+                };
+
+                const response = await fetch(
+                  `${baseUrl}remove/${comment.id}`,
+                  options
+                );
+                console.log("Delete response: ", response);
+                // const json = await response.json();
+                // console.log(json);
+              } catch (err) {
+                console.log("ERROR:", err);
+              }
+            })();
+          });
         });
       } catch (error) {
         console.log(error);
@@ -156,7 +163,7 @@ const headers = { key };
     //       headers: { key },
     //     };
 
-    //     const response = await fetch(`${baseUrl}remove/29`, options);
+    //     const response = await fetch(`${baseUrl}remove/39`, options);
     //     console.log("Delete response: ", response);
     //     // const json = await response.json();
     //     // console.log(json);

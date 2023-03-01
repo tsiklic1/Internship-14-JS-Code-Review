@@ -115,4 +115,15 @@ body {
 .comment-date {
   font-size: 10px;
   margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.comment-display--bottom {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.comment-display--bottom > * {
+  margin-right: 20px;
 }

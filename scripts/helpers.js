@@ -74,9 +74,52 @@ function createHTMLforCommentWrapper(index) {
   return commentWrapper;
 }
 
+function createHTMLforCommentDisplayWrapper(comment, baseUrl, key) {
+  let commentDisplayWrapper = createElementWithTypeAndClass(
+    "div",
+    "comment-display-wrapper"
+  );
+
+  let commentText = createElementWithTypeAndClass("p", "comment-text");
+  let commentTextNode = document.createTextNode(comment.text);
+  commentText.appendChild(commentTextNode);
+
+  let commentDisplayBottom = createElementWithTypeAndClass(
+    "div",
+    "comment-display--bottom"
+  );
+
+  let commentDate = createElementWithTypeAndClass("p", "comment-date");
+  let commentDateNode = document.createTextNode(comment.createdAt);
+  commentDate.appendChild(commentDateNode);
+
+  let commentLikeToggleButton = createElementWithTypeAndClass(
+    "button",
+    "button--like"
+  );
+  let commentLikeToggleButtonNode = document.createTextNode("Like");
+  commentLikeToggleButton.appendChild(commentLikeToggleButtonNode);
+
+  let commentDeleteButton = createElementWithTypeAndClass(
+    "button",
+    "button--delete"
+  );
+  let commentDeleteButtonNode = document.createTextNode("Delete");
+  commentDeleteButton.appendChild(commentDeleteButtonNode);
+
+  commentDisplayBottom.appendChild(commentDate);
+  commentDisplayBottom.appendChild(commentLikeToggleButton);
+  commentDisplayBottom.appendChild(commentDeleteButton);
+
+  commentDisplayWrapper.appendChild(commentText);
+  commentDisplayWrapper.appendChild(commentDisplayBottom);
+
+  return commentDisplayWrapper;
+}
 export {
   createElementWithTypeAndClass,
   getCurrentDateTime,
   createHTMLforCodeBlock,
   createHTMLforCommentWrapper,
+  createHTMLforCommentDisplayWrapper,
 };
