@@ -70,8 +70,6 @@ const headers = { key };
       sendButton.addEventListener("click", function (e) {
         const commentContent = commentTextareas[index].value;
 
-        console.log(commentTextareas[index].value);
-
         if (!commentContent) {
           alert("Comment can't be empty");
           return;
@@ -81,8 +79,6 @@ const headers = { key };
           line: index,
           text: commentContent,
         };
-
-        console.log(comment);
 
         (async () => {
           try {
@@ -103,9 +99,6 @@ const headers = { key };
           }
         })();
         commentTextareas[index].value = "";
-
-        console.log(commentWrappers[index]);
-
         commentWrappers[index].classList.remove("comment-wrapper--shown");
       });
     });
@@ -132,7 +125,9 @@ const headers = { key };
 
           let commentDeleteButton =
             commentDisplayWrapper.querySelector(".button--delete");
-          console.log(index, commentDeleteButton);
+
+          let commentLikeToggleButton =
+            commentDisplayWrapper.querySelector(".button--like");
 
           commentDeleteButton.addEventListener("click", function (e) {
             (async () => {
@@ -147,8 +142,6 @@ const headers = { key };
                   options
                 );
                 console.log("Delete response: ", response);
-                // const json = await response.json();
-                // console.log(json);
               } catch (err) {
                 console.log("ERROR:", err);
               }
@@ -158,28 +151,96 @@ const headers = { key };
               "comment-display-wrapper--removed"
             );
           });
+
+          console.log(index, commentLikeToggleButton);
+
+          commentLikeToggleButton.addEventListener("click", function (e) {
+            console.log(commentLikeToggleButton);
+            console.log("glavni", comment);
+            (async () => {
+              try {
+                const response = await fetch(
+                  `${baseUrl}comments/${comment.id}`,
+                  {
+                    headers,
+                  }
+                );
+                const fetchedComment = await response.json();
+
+                console.log("fetchedComment: ", fetchedComment);
+
+                if (!fetchedComment.comment.isLiked) {
+                  console.log("fetchedComment not liked");
+                  const isLikedTrueObject = {
+                    isLiked: true,
+                  };
+                  commentLikeToggleButton.innerHTML = "Unlike";
+                  commentLikeToggleButton.classList.remove(
+                    "button--like__green"
+                  );
+
+                  commentLikeToggleButton.classList.add("button--like__red");
+                  (async () => {
+                    try {
+                      const options = {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                          key,
+                        },
+                        body: JSON.stringify(isLikedTrueObject),
+                      };
+
+                      const response = await fetch(
+                        `${baseUrl}update-is-liked/${comment.id}`,
+                        options
+                      );
+                    } catch (err) {
+                      console.log(err);
+                    }
+                  })();
+                } else {
+                  console.log("fetchedComment is liked");
+
+                  commentLikeToggleButton.innerHTML = "Like";
+                  console.log("lajkan");
+
+                  commentLikeToggleButton.classList.remove("button--like__red");
+                  commentLikeToggleButton.classList.add("button--like__green");
+
+                  const isLikedFalseObject = {
+                    isLiked: false,
+                  };
+                  (async () => {
+                    try {
+                      const options = {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                          key,
+                        },
+                        body: JSON.stringify(isLikedFalseObject),
+                      };
+
+                      const response = await fetch(
+                        `${baseUrl}update-is-liked/${comment.id}`,
+                        options
+                      );
+                    } catch (err) {
+                      console.log(err);
+                    }
+                  })();
+                }
+              } catch (err) {
+                console.log(err);
+              }
+            })();
+          });
         });
       } catch (error) {
         console.log(error);
       }
     })();
-
-    // deleting comments with id
-    // (async () => {
-    //   try {
-    //     const options = {
-    //       method: "DELETE",
-    //       headers: { key },
-    //     };
-
-    //     const response = await fetch(`${baseUrl}remove/39`, options);
-    //     console.log("Delete response: ", response);
-    //     // const json = await response.json();
-    //     // console.log(json);
-    //   } catch (err) {
-    //     console.log("ERROR:", err);
-    //   }
-    // })();
   } catch (error) {
     console.log("ERROR:", error);
   }

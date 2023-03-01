@@ -97,7 +97,17 @@ function createHTMLforCommentDisplayWrapper(comment, baseUrl, key) {
     "button",
     "button--like"
   );
-  let commentLikeToggleButtonNode = document.createTextNode("Like");
+
+  let commentLikeToggleButtonNode;
+
+  if (comment.isLiked) {
+    commentLikeToggleButtonNode = document.createTextNode("Unlike");
+    commentLikeToggleButton.classList.add("button--like__red");
+  } else {
+    commentLikeToggleButtonNode = document.createTextNode("Like");
+    commentLikeToggleButton.classList.add("button--like__green");
+  }
+
   commentLikeToggleButton.appendChild(commentLikeToggleButtonNode);
 
   let commentDeleteButton = createElementWithTypeAndClass(

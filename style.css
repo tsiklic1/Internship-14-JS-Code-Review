@@ -93,6 +93,20 @@ body {
   margin-right: 10px;
 }
 
+.button--like {
+  width: 55px;
+  color: white;
+  border-radius: 6px;
+}
+
+.button--like__green {
+  background-color: #00bb00;
+}
+
+.button--like__red {
+  background-color: #bb0000;
+}
+
 .comment-display-wrapper {
   background-color: #d8c4a4;
   width: fit-content;
