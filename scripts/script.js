@@ -19,11 +19,12 @@ const key = "tsiklic1";
 const headers = { key };
 
 (async (baseUrl, headers) => {
+  let localStorageKey = 0;
+
   try {
     console.log("fetching");
     const response = await fetch(`${baseUrl}code`, { headers });
     const json = await response.json();
-
     console.log("Loaded");
 
     const codeLines = json.code.split("\n");
@@ -44,7 +45,6 @@ const headers = { key };
 
     lineIndexes.forEach((lineIndex, index) => {
       let commentWrapper = createHTMLforCommentWrapper(index);
-
       lineWrappers[index].appendChild(commentWrapper);
     });
 
@@ -83,6 +83,37 @@ const headers = { key };
 
         postCommentFetch(commentContent, baseUrl, key, index);
 
+        commentTextareas[index].value = "";
+        commentWrappers[index].classList.remove("comment-wrapper--shown");
+      });
+    });
+
+    const savePrivateNoteButtons = document.querySelectorAll(".button--save");
+    savePrivateNoteButtons.forEach((savePrivateNoteButton, index) => {
+      savePrivateNoteButton.addEventListener("click", function (e) {
+        //triba generirat neki id tako da se ne ponavlja
+
+        const privateNote = {
+          isLiked: false,
+          text: commentTextareas[index].value,
+          time: getCurrentDateTime(),
+        };
+
+        console.log(privateNote);
+
+        if (localStorage.length) {
+          let maxKey = -1;
+          for (let i = 0; i < localStorage.length; i++) {
+            if (+localStorage.key(i) > maxKey) {
+              maxKey = +localStorage.key(i);
+            }
+          }
+          localStorageKey = maxKey + 1;
+        }
+        localStorage.setItem(
+          JSON.stringify(localStorageKey),
+          JSON.stringify(privateNote)
+        );
         commentTextareas[index].value = "";
         commentWrappers[index].classList.remove("comment-wrapper--shown");
       });
