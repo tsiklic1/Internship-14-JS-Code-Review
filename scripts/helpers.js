@@ -6,7 +6,7 @@ function createElementWithTypeAndClass(type, className) {
 }
 
 function getCurrentDateTime() {
-  return (
+  return String(
     new Date().toLocaleDateString() + "--" + new Date().toLocaleTimeString()
   );
 }
@@ -126,10 +126,66 @@ function createHTMLforCommentDisplayWrapper(comment, baseUrl, key) {
 
   return commentDisplayWrapper;
 }
+
+function createHTMLforPrivateNoteDisplayWrapper(privateNote, baseUrl, key) {
+  let privateNoteDisplayWrapper = createElementWithTypeAndClass(
+    "div",
+    "private-note-display-wrapper"
+  );
+
+  let privateNoteText = createElementWithTypeAndClass("p", "comment-text");
+  let privateNoteTextNode = document.createTextNode(privateNote.text);
+  privateNoteText.appendChild(privateNoteTextNode);
+
+  let privateNoteDisplayBottom = createElementWithTypeAndClass(
+    "div",
+    "private-note-display--bottom"
+  );
+
+  let privateNoteDate = createElementWithTypeAndClass("p", "comment-date");
+  let privateNoteDateNode = document.createTextNode(privateNote.createdAt);
+  privateNoteDate.appendChild(privateNoteDateNode);
+
+  let privateNoteLikeToggleButton = createElementWithTypeAndClass(
+    "button",
+    "private-note-button--like"
+  );
+
+  let privateNoteLikeToggleButtonNode;
+
+  if (privateNote.isLiked) {
+    privateNoteLikeToggleButtonNode = document.createTextNode("Unlike");
+    privateNoteLikeToggleButton.classList.add("private-note-button--like__red");
+  } else {
+    privateNoteLikeToggleButtonNode = document.createTextNode("Like");
+    privateNoteLikeToggleButton.classList.add(
+      "private-note-button--like__green"
+    );
+  }
+
+  privateNoteLikeToggleButton.appendChild(privateNoteLikeToggleButtonNode);
+
+  let privateNoteDeleteButton = createElementWithTypeAndClass(
+    "button",
+    "private-note-button--delete"
+  );
+  let privateNoteDeleteButtonNode = document.createTextNode("Delete");
+  privateNoteDeleteButton.appendChild(privateNoteDeleteButtonNode);
+
+  privateNoteDisplayBottom.appendChild(privateNoteDate);
+  privateNoteDisplayBottom.appendChild(privateNoteLikeToggleButton);
+  privateNoteDisplayBottom.appendChild(privateNoteDeleteButton);
+
+  privateNoteDisplayWrapper.appendChild(privateNoteText);
+  privateNoteDisplayWrapper.appendChild(privateNoteDisplayBottom);
+
+  return privateNoteDisplayWrapper;
+}
 export {
   createElementWithTypeAndClass,
   getCurrentDateTime,
   createHTMLforCodeBlock,
   createHTMLforCommentWrapper,
   createHTMLforCommentDisplayWrapper,
+  createHTMLforPrivateNoteDisplayWrapper,
 };

@@ -4,6 +4,7 @@ import {
   createHTMLforCodeBlock,
   createHTMLforCommentWrapper,
   createHTMLforCommentDisplayWrapper,
+  createHTMLforPrivateNoteDisplayWrapper,
 } from "./helpers.js";
 
 import {
@@ -91,12 +92,16 @@ const headers = { key };
     const savePrivateNoteButtons = document.querySelectorAll(".button--save");
     savePrivateNoteButtons.forEach((savePrivateNoteButton, index) => {
       savePrivateNoteButton.addEventListener("click", function (e) {
-        //triba generirat neki id tako da se ne ponavlja
+        if (!commentTextareas[index].value) {
+          alert("Private note can't be empty");
+          return;
+        }
 
         const privateNote = {
           isLiked: false,
           text: commentTextareas[index].value,
-          time: getCurrentDateTime(),
+          createdAt: getCurrentDateTime(),
+          line: index,
         };
 
         console.log(privateNote);
@@ -119,6 +124,47 @@ const headers = { key };
       });
     });
 
+    const localStorageItems = { ...localStorage };
+    console.log("local storage items", localStorageItems);
+
+    const localStorageObjectStrings = Object.values(localStorageItems);
+    const localStorageObjects = localStorageObjectStrings.map((objectString) =>
+      JSON.parse(objectString)
+    );
+
+    const localStorageKeysStrings = Object.keys(localStorageItems);
+    const localStorageKeys = localStorageKeysStrings.map((keyString) =>
+      parseInt(keyString)
+    );
+    console.log("parsed", localStorageKeys);
+
+    localStorageObjects.forEach((localStorageObject, index) => {
+      let privateNoteDisplayWrapper = createHTMLforPrivateNoteDisplayWrapper(
+        localStorageObject,
+        baseUrl,
+        key
+      );
+
+      console.log(privateNoteDisplayWrapper);
+
+      console.log("line", localStorageObject.line);
+
+      lineWrappers[localStorageObject.line].appendChild(
+        privateNoteDisplayWrapper
+      );
+
+      let privateNoteDeleteButton = privateNoteDisplayWrapper.querySelector(
+        ".private-note-button--delete"
+      );
+      privateNoteDeleteButton.addEventListener("click", function (e) {
+        console.log("click", localStorageObject.line);
+        localStorage.removeItem(localStorageKeys[index]);
+        privateNoteDisplayWrapper.classList.add(
+          "comment-display-wrapper--removed"
+        );
+      });
+    });
+
     (async () => {
       try {
         const response = await fetch(`${baseUrl}comments`, {
@@ -126,16 +172,12 @@ const headers = { key };
         });
         const json = await response.json();
 
-        console.log(json);
-
         json.comments.forEach((comment, index) => {
           let commentDisplayWrapper = createHTMLforCommentDisplayWrapper(
             comment,
             key,
             baseUrl
           );
-
-          console.log(comment.id);
 
           lineWrappers[comment.line].appendChild(commentDisplayWrapper);
 

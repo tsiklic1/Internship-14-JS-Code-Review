@@ -114,6 +114,7 @@ body {
   border-radius: 6px;
   margin-bottom: 2px;
   margin-left: 30px;
+  max-width: 500px;
 }
 
 .comment-display-wrapper--removed {
@@ -143,5 +144,25 @@ body {
 }
 
 .comment-display--bottom > * {
+  margin-right: 20px;
+}
+
+.private-note-display-wrapper {
+  background-color: #afe1af;
+  width: fit-content;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 2px;
+  margin-left: 30px;
+  max-width: 500px;
+}
+
+.private-note-display--bottom {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.private-note-display--bottom > * {
   margin-right: 20px;
 }
