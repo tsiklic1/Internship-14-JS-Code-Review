@@ -6,6 +6,12 @@ import {
   createHTMLforCommentDisplayWrapper,
 } from "./helpers.js";
 
+import {
+  likeCommentFetch,
+  unlikeCommentFetch,
+  postCommentFetch,
+} from "./fetch.js";
+
 const baseUrl = "https://homework-server1.onrender.com/";
 
 const key = "tsiklic1";
@@ -75,29 +81,8 @@ const headers = { key };
           return;
         }
 
-        const comment = {
-          line: index,
-          text: commentContent,
-        };
+        postCommentFetch(commentContent, baseUrl, key, index);
 
-        (async () => {
-          try {
-            const options = {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                key,
-              },
-              body: JSON.stringify(comment),
-            };
-
-            const response = await fetch(`${baseUrl}create`, options);
-            const json = await response.json();
-            console.log("Posted comment", json);
-          } catch (err) {
-            console.log(err);
-          }
-        })();
         commentTextareas[index].value = "";
         commentWrappers[index].classList.remove("comment-wrapper--shown");
       });
@@ -152,11 +137,7 @@ const headers = { key };
             );
           });
 
-          console.log(index, commentLikeToggleButton);
-
           commentLikeToggleButton.addEventListener("click", function (e) {
-            console.log(commentLikeToggleButton);
-            console.log("glavni", comment);
             (async () => {
               try {
                 const response = await fetch(
@@ -167,69 +148,20 @@ const headers = { key };
                 );
                 const fetchedComment = await response.json();
 
-                console.log("fetchedComment: ", fetchedComment);
-
                 if (!fetchedComment.comment.isLiked) {
-                  console.log("fetchedComment not liked");
-                  const isLikedTrueObject = {
-                    isLiked: true,
-                  };
-                  commentLikeToggleButton.innerHTML = "Unlike";
-                  commentLikeToggleButton.classList.remove(
-                    "button--like__green"
+                  likeCommentFetch(
+                    commentLikeToggleButton,
+                    baseUrl,
+                    key,
+                    comment
                   );
-
-                  commentLikeToggleButton.classList.add("button--like__red");
-                  (async () => {
-                    try {
-                      const options = {
-                        method: "PUT",
-                        headers: {
-                          "Content-Type": "application/json",
-                          key,
-                        },
-                        body: JSON.stringify(isLikedTrueObject),
-                      };
-
-                      const response = await fetch(
-                        `${baseUrl}update-is-liked/${comment.id}`,
-                        options
-                      );
-                    } catch (err) {
-                      console.log(err);
-                    }
-                  })();
                 } else {
-                  console.log("fetchedComment is liked");
-
-                  commentLikeToggleButton.innerHTML = "Like";
-                  console.log("lajkan");
-
-                  commentLikeToggleButton.classList.remove("button--like__red");
-                  commentLikeToggleButton.classList.add("button--like__green");
-
-                  const isLikedFalseObject = {
-                    isLiked: false,
-                  };
-                  (async () => {
-                    try {
-                      const options = {
-                        method: "PUT",
-                        headers: {
-                          "Content-Type": "application/json",
-                          key,
-                        },
-                        body: JSON.stringify(isLikedFalseObject),
-                      };
-
-                      const response = await fetch(
-                        `${baseUrl}update-is-liked/${comment.id}`,
-                        options
-                      );
-                    } catch (err) {
-                      console.log(err);
-                    }
-                  })();
+                  unlikeCommentFetch(
+                    commentLikeToggleButton,
+                    baseUrl,
+                    key,
+                    comment
+                  );
                 }
               } catch (err) {
                 console.log(err);
