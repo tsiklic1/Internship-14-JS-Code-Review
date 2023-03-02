@@ -155,12 +155,10 @@ function createHTMLforPrivateNoteDisplayWrapper(privateNote, baseUrl, key) {
 
   if (privateNote.isLiked) {
     privateNoteLikeToggleButtonNode = document.createTextNode("Unlike");
-    privateNoteLikeToggleButton.classList.add("private-note-button--like__red");
+    privateNoteLikeToggleButton.classList.add("button--like__red");
   } else {
     privateNoteLikeToggleButtonNode = document.createTextNode("Like");
-    privateNoteLikeToggleButton.classList.add(
-      "private-note-button--like__green"
-    );
+    privateNoteLikeToggleButton.classList.add("button--like__green");
   }
 
   privateNoteLikeToggleButton.appendChild(privateNoteLikeToggleButtonNode);

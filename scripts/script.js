@@ -14,14 +14,11 @@ import {
 } from "./fetch.js";
 
 const baseUrl = "https://homework-server1.onrender.com/";
-
 const key = "tsiklic1";
-
 const headers = { key };
 
 (async (baseUrl, headers) => {
   let localStorageKey = 0;
-
   try {
     console.log("fetching");
     const response = await fetch(`${baseUrl}code`, { headers });
@@ -29,7 +26,6 @@ const headers = { key };
     console.log("Loaded");
 
     const codeLines = json.code.split("\n");
-
     const codeLinesWithTabs = codeLines.map((line) =>
       line.replace(/\s/g, "\u00A0")
     );
@@ -63,7 +59,6 @@ const headers = { key };
     });
 
     const cancelButtons = document.querySelectorAll(".button--cancel");
-
     cancelButtons.forEach((cancelButton, index) => {
       cancelButton.addEventListener("click", function (e) {
         commentWrappers[index].classList.remove("comment-wrapper--shown");
@@ -72,7 +67,6 @@ const headers = { key };
     });
 
     const sendButtons = document.querySelectorAll(".button--send");
-
     sendButtons.forEach((sendButton, index) => {
       sendButton.addEventListener("click", function (e) {
         const commentContent = commentTextareas[index].value;
@@ -81,7 +75,6 @@ const headers = { key };
           alert("Comment can't be empty");
           return;
         }
-
         postCommentFetch(commentContent, baseUrl, key, index);
 
         commentTextareas[index].value = "";
@@ -104,8 +97,6 @@ const headers = { key };
           line: index,
         };
 
-        console.log(privateNote);
-
         if (localStorage.length) {
           let maxKey = -1;
           for (let i = 0; i < localStorage.length; i++) {
@@ -125,29 +116,22 @@ const headers = { key };
     });
 
     const localStorageItems = { ...localStorage };
-    console.log("local storage items", localStorageItems);
-
     const localStorageObjectStrings = Object.values(localStorageItems);
     const localStorageObjects = localStorageObjectStrings.map((objectString) =>
       JSON.parse(objectString)
     );
-
     const localStorageKeysStrings = Object.keys(localStorageItems);
     const localStorageKeys = localStorageKeysStrings.map((keyString) =>
       parseInt(keyString)
     );
-    console.log("parsed", localStorageKeys);
 
     localStorageObjects.forEach((localStorageObject, index) => {
+      console.log("local storage object", localStorageObject);
       let privateNoteDisplayWrapper = createHTMLforPrivateNoteDisplayWrapper(
         localStorageObject,
         baseUrl,
         key
       );
-
-      console.log(privateNoteDisplayWrapper);
-
-      console.log("line", localStorageObject.line);
 
       lineWrappers[localStorageObject.line].appendChild(
         privateNoteDisplayWrapper
@@ -156,12 +140,37 @@ const headers = { key };
       let privateNoteDeleteButton = privateNoteDisplayWrapper.querySelector(
         ".private-note-button--delete"
       );
+
       privateNoteDeleteButton.addEventListener("click", function (e) {
         console.log("click", localStorageObject.line);
         localStorage.removeItem(localStorageKeys[index]);
         privateNoteDisplayWrapper.classList.add(
           "comment-display-wrapper--removed"
         );
+      });
+
+      let privateNoteLikeButton = privateNoteDisplayWrapper.querySelector(
+        ".private-note-button--like"
+      );
+      privateNoteLikeButton.addEventListener("click", function (e) {
+        const id = localStorageKeys[index];
+        if (localStorageObject.isLiked) {
+          //lajkan je - triba ga odljakat
+          localStorageObject.isLiked = false;
+          localStorage.setItem(id, JSON.stringify(localStorageObject));
+          privateNoteLikeButton.innerHTML = "Like";
+
+          privateNoteLikeButton.classList.remove("button--like__red");
+          privateNoteLikeButton.classList.add("button--like__green");
+        } else {
+          //nije lajkan - triba ga lajkat
+          localStorageObject.isLiked = true;
+          localStorage.setItem(id, JSON.stringify(localStorageObject));
+          privateNoteLikeButton.innerHTML = "Unlike";
+
+          privateNoteLikeButton.classList.remove("button--like__green");
+          privateNoteLikeButton.classList.add("button--like__red");
+        }
       });
     });
 

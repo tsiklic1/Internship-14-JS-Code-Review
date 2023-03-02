@@ -166,3 +166,9 @@ body {
 .private-note-display--bottom > * {
   margin-right: 20px;
 }
+
+.private-note-button--like {
+  width: 55px;
+  color: white;
+  border-radius: 6px;
+}
