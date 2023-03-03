@@ -188,8 +188,7 @@ const headers = { key };
             baseUrl
           );
 
-          lineWrappers[comment.line].appendChild(commentDisplayWrapper);
-
+          lineWrappers[comment.line - 1].appendChild(commentDisplayWrapper);
           let commentDeleteButton =
             commentDisplayWrapper.querySelector(".button--delete");
 

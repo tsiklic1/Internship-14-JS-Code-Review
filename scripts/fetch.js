@@ -59,12 +59,14 @@ function unlikeCommentFetch(commentLikeToggleButton, baseUrl, key, comment) {
 
 function postCommentFetch(commentContent, baseUrl, key, index) {
   const comment = {
-    line: index,
+    line: index + 1,
     text: commentContent,
   };
 
   (async () => {
     try {
+      console.log(comment);
+
       const options = {
         method: "POST",
         headers: {
