@@ -13,6 +13,8 @@ import {
   postCommentFetch,
 } from "./fetch.js";
 
+import { localStorageLike } from "./localStorage.js";
+
 const baseUrl = "https://homework-server1.onrender.com/";
 const key = "tsiklic1";
 const headers = { key };
@@ -20,10 +22,8 @@ const headers = { key };
 (async (baseUrl, headers) => {
   let localStorageKey = 0;
   try {
-    console.log("fetching");
     const response = await fetch(`${baseUrl}code`, { headers });
     const json = await response.json();
-    console.log("Loaded");
 
     const codeLines = json.code.split("\n");
     const codeLinesWithTabs = codeLines.map((line) =>
@@ -126,52 +126,31 @@ const headers = { key };
     );
 
     localStorageObjects.forEach((localStorageObject, index) => {
-      console.log("local storage object", localStorageObject);
       let privateNoteDisplayWrapper = createHTMLforPrivateNoteDisplayWrapper(
         localStorageObject,
         baseUrl,
         key
       );
-
       lineWrappers[localStorageObject.line].appendChild(
         privateNoteDisplayWrapper
       );
-
       let privateNoteDeleteButton = privateNoteDisplayWrapper.querySelector(
         ".private-note-button--delete"
       );
 
       privateNoteDeleteButton.addEventListener("click", function (e) {
-        console.log("click", localStorageObject.line);
         localStorage.removeItem(localStorageKeys[index]);
         privateNoteDisplayWrapper.classList.add(
           "comment-display-wrapper--removed"
         );
       });
 
-      let privateNoteLikeButton = privateNoteDisplayWrapper.querySelector(
-        ".private-note-button--like"
+      localStorageLike(
+        privateNoteDisplayWrapper,
+        localStorageKeys,
+        index,
+        localStorageObject
       );
-      privateNoteLikeButton.addEventListener("click", function (e) {
-        const id = localStorageKeys[index];
-        if (localStorageObject.isLiked) {
-          //lajkan je - triba ga odljakat
-          localStorageObject.isLiked = false;
-          localStorage.setItem(id, JSON.stringify(localStorageObject));
-          privateNoteLikeButton.innerHTML = "Like";
-
-          privateNoteLikeButton.classList.remove("button--like__red");
-          privateNoteLikeButton.classList.add("button--like__green");
-        } else {
-          //nije lajkan - triba ga lajkat
-          localStorageObject.isLiked = true;
-          localStorage.setItem(id, JSON.stringify(localStorageObject));
-          privateNoteLikeButton.innerHTML = "Unlike";
-
-          privateNoteLikeButton.classList.remove("button--like__green");
-          privateNoteLikeButton.classList.add("button--like__red");
-        }
-      });
     });
 
     (async () => {
@@ -180,6 +159,10 @@ const headers = { key };
           headers: { key },
         });
         const json = await response.json();
+
+        if (!response.ok) {
+          throw json.message;
+        }
 
         json.comments.forEach((comment, index) => {
           let commentDisplayWrapper = createHTMLforCommentDisplayWrapper(
@@ -207,27 +190,36 @@ const headers = { key };
                   `${baseUrl}remove/${comment.id}`,
                   options
                 );
-                console.log("Delete response: ", response);
+
+                if (!response.ok) {
+                  const json = await response.json();
+                  throw json.message;
+                }
+
+                commentDisplayWrapper.classList.add(
+                  "comment-display-wrapper--removed"
+                );
               } catch (err) {
                 console.log("ERROR:", err);
+                alert("Error", err);
               }
             })();
-
-            commentDisplayWrapper.classList.add(
-              "comment-display-wrapper--removed"
-            );
           });
 
           commentLikeToggleButton.addEventListener("click", function (e) {
             (async () => {
               try {
                 const response = await fetch(
-                  `${baseUrl}comments/${comment.id}`,
+                  `${baseUrl}comments/${comment.id}`, //comment.id
                   {
                     headers,
                   }
                 );
                 const fetchedComment = await response.json();
+
+                if (!response.ok) {
+                  throw fetchedComment.message;
+                }
 
                 if (!fetchedComment.comment.isLiked) {
                   likeCommentFetch(
@@ -245,13 +237,14 @@ const headers = { key };
                   );
                 }
               } catch (err) {
-                console.log(err);
+                alert("error", err);
               }
             })();
           });
         });
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
+        alert(err);
       }
     })();
   } catch (error) {

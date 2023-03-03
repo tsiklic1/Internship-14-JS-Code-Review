@@ -21,8 +21,14 @@ function likeCommentFetch(commentLikeToggleButton, baseUrl, key, comment) {
         `${baseUrl}update-is-liked/${comment.id}`,
         options
       );
+
+      if (!response.ok) {
+        const json = await response.json();
+        throw json.message;
+      }
     } catch (err) {
       console.log(err);
+      alert("error", err);
     }
   })();
 }
@@ -51,8 +57,14 @@ function unlikeCommentFetch(commentLikeToggleButton, baseUrl, key, comment) {
         `${baseUrl}update-is-liked/${comment.id}`,
         options
       );
+
+      if (!response.ok) {
+        const json = await response.json();
+        throw json.message;
+      }
     } catch (err) {
       console.log(err);
+      alert("error", err);
     }
   })();
 }
@@ -65,8 +77,6 @@ function postCommentFetch(commentContent, baseUrl, key, index) {
 
   (async () => {
     try {
-      console.log(comment);
-
       const options = {
         method: "POST",
         headers: {
@@ -78,9 +88,13 @@ function postCommentFetch(commentContent, baseUrl, key, index) {
 
       const response = await fetch(`${baseUrl}create`, options);
       const json = await response.json();
-      console.log("Posted comment", json);
+
+      if (!response.ok) {
+        throw json.message;
+      }
     } catch (err) {
       console.log(err);
+      alert(err);
     }
   })();
 }
